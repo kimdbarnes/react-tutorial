@@ -28,7 +28,24 @@ class App extends React.Component {
 				state: 'fishes'
 			}
 		)
+
+		// check if there is an order in local storage
+		const localStorageRef = localStorage.getItem(`order-${this.props.params.storeId}`);
+		if (localStorageRef) {
+			// update our App's order in state
+			this.setState({
+				order: JSON.parse(localStorageRef)
+			})
+		}
 	}
+
+	componentWillUpdate(nextProps, nextState) {
+		localStorage.setItem(
+			`order-${this.props.params.storeId}`, 
+			JSON.stringify(nextState.order),
+			)
+	}
+
 
 	componentWillUnmount() {
 		base.removeBinding(this.ref);
@@ -78,7 +95,12 @@ class App extends React.Component {
 					}
 					</ul>
 				</div>
-				<Order fishes={this.state.fishes} order={this.state.order}/>
+				<Order 
+					fishes={this.state.fishes} 
+					order={this.state.order}
+					// When/why is this needed?
+					// params={this.props.params}
+				/>
 				<Inventory 
 					addFish={this.addFish}
 					loadSamples={this.loadSamples}
